@@ -4,8 +4,8 @@ from util import *
 from rules import *
 from handlers import *
 
-class Parser:
 
+class Parser:
     def __init__(self, handler):
         self.handler = handler
         self.rules = []
@@ -13,10 +13,12 @@ class Parser:
 
     def addRule(self, rule):
         self.rules.append(rule)
+
     def addFilter(self, pattern, name):
         def filter(block, handler):
             return re.sub(pattern, handler.sub(name), block)
         self.filters.append(filter)
+
     def parse(self, file):
         self.handler.start('document')
         for block in blocks(file):
@@ -30,7 +32,6 @@ class Parser:
 
 
 class BasicTextParser(Parser):
-
     def __init__(self, handler):
         Parser.__init__(self, handler)
         self.addRule(ListRule())
@@ -42,6 +43,7 @@ class BasicTextParser(Parser):
         self.addFilter(r'\*(.+?)\*', 'empasis')
         self.addFilter(r'(http://[\.a-zA-Z/]+)', 'url')
         self.addFilter(r'([\.a-zA-Z]+@[\.a-zA-Z]+[a-zA-Z]+)', 'mail')
+
 
 handler = HTMLRenderer()
 parser = BasicTextParser(handler)
